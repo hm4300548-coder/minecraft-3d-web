@@ -1,0 +1,31 @@
+{
+  "name": "minecraft-3d-web",
+  "version": "1.0.0",
+  "description": "A 3D Minecraft-like game built with Three.js, featuring infinite terrain generation, physics simulation, and beautiful graphics.",
+  "keywords": [
+    "minecraft",
+    "3d",
+    "game",
+    "web",
+    "three.js",
+    "voxel",
+    "terrain-generation",
+    "procedural-generation"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/minecraft-3d-web.git"
+  },
+  "homepage": "https://minecraft-3d-web.vercel.app",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000",
+    "build": "echo 'No build step needed for static files'"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "private": false
+}

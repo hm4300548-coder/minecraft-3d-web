@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minecraft 3D - Web Game</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- 3D Canvas Container -->
+  <div id="canvas-container"></div>
+
+  <!-- UI Container -->
+  <div id="ui-container">
+    <!-- Crosshair (تقاطع المؤشر) -->
+    <div id="crosshair"></div>
+
+    <!-- Debug Info -->
+    <div id="debug-info" style="display: none;">
+      <p>FPS: <span id="fps">0</span></p>
+      <p>Position: <span id="pos">0, 0, 0</span></p>
+      <p>Chunks Loaded: <span id="chunks">0</span></p>
+    </div>
+  </div>
+
+  <!-- Three.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Game Scripts (Module System) -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
