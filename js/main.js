@@ -3,6 +3,7 @@
 // ==========================================
 
 import CONSTANTS from './utils/Constants.js';
+import Config from './utils/Config.js';
 import SceneManager from './core/SceneManager.js';
 import CameraManager from './core/CameraManager.js';
 import Player from './player/Player.js';
@@ -124,7 +125,9 @@ class Game {
     this.audioManager.playMusic('ambient');
 
     // إنشاء Block Storage (نظام حفظ الكتل في قاعدة البيانات)
-    this.blockStorage = new BlockStorage('http://localhost:3000', 'default');
+    const backendUrl = Config.getBackendUrl();
+    this.blockStorage = new BlockStorage(backendUrl, 'default');
+    console.log(`🔌 Backend URL: ${backendUrl}`);
     this.updateLoadingProgress(35);
 
     // إنشاء Scene Manager (إدارة المشهد والإضاءة)

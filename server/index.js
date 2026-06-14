@@ -17,13 +17,31 @@ import {
   getBlocksInRange,
 } from './database.js';
 
+// Load environment variables from root or current directory
 dotenv.config({ path: '../.env' });
+dotenv.config({ path: './.env' });
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ===== Middleware =====
-app.use(cors());
+// Configure CORS with proper origin restrictions
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000,http://localhost:8000').split(',');
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps, Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS not allowed for this origin: ' + origin));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 

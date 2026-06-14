@@ -2,48 +2,94 @@
 // BLOCKSTORAGE.JS - نظام حفظ الكتل من العميل
 // ==========================================
 
+import Config from './Config.js';
+
 class BlockStorage {
-  constructor(serverUrl = 'http://localhost:3000', userId = 'default') {
-    this.serverUrl = serverUrl;
+  constructor(serverUrl = null, userId = 'default') {
+    this.serverUrl = serverUrl || Config.getBackendUrl();
     this.userId = userId;
     this.savingQueue = [];
     this.isSaving = false;
     this.autoSaveInterval = 30000; // كل 30 ثانية
     this.unsavedBlocks = new Set();
 
+    // Retry configuration
+    const retryConfig = Config.getRetryConfig();
+    this.maxRetries = retryConfig.maxRetries;
+    this.retryDelay = retryConfig.retryDelay;
+    this.backoffMultiplier = retryConfig.backoffMultiplier;
+    this.maxDelay = retryConfig.maxDelay;
+    this.apiTimeout = Config.getApiTimeout();
+
+    console.log(`📦 BlockStorage initialized with backend: ${this.serverUrl}`);
     this.startAutoSave();
+  }
+
+  // ===== Retry helper with exponential backoff =====
+  async retryFetch(url, options, retryCount = 0) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), this.apiTimeout);
+
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+      return response;
+    } catch (error) {
+      clearTimeout(timeoutId);
+
+      // Check if we should retry
+      if (retryCount < this.maxRetries) {
+        const delay = Math.min(
+          this.retryDelay * Math.pow(this.backoffMultiplier, retryCount),
+          this.maxDelay
+        );
+
+        console.warn(`⚠️ Request failed, retrying in ${delay}ms... (${retryCount + 1}/${this.maxRetries})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return this.retryFetch(url, options, retryCount + 1);
+      }
+
+      throw error;
+    }
   }
 
   // ===== حفظ كتلة واحدة =====
   async saveBlock(x, y, z, blockType) {
     try {
-      const response = await fetch(`${this.serverUrl}/api/blocks/save`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          x: Math.round(x),
-          y: Math.round(y),
-          z: Math.round(z),
-          blockType,
-          userId: this.userId,
-        }),
-      });
+      const response = await this.retryFetch(
+        `${this.serverUrl}/api/blocks/save`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            x: Math.round(x),
+            y: Math.round(y),
+            z: Math.round(z),
+            blockType,
+            userId: this.userId,
+          }),
+        }
+      );
 
       const result = await response.json();
 
-      if (result.success) {
+      if (response.ok && result.success) {
         console.log(`✓ Block saved: (${x}, ${y}, ${z}) -> ${blockType}`);
         this.unsavedBlocks.delete(`${x},${y},${z}`);
         return result;
       } else {
-        console.error('❌ Save failed:', result.error);
+        console.error('❌ Save failed:', result.error || response.statusText);
         this.unsavedBlocks.add(`${x},${y},${z}`);
         return result;
       }
     } catch (error) {
-      console.error('❌ Save error:', error);
+      console.error('❌ Save error after retries:', error);
       this.unsavedBlocks.add(`${x},${y},${z}`);
       return { success: false, error: error.message };
     }
@@ -131,20 +177,21 @@ class BlockStorage {
   // ===== تحميل جميع الكتل المحفوظة =====
   async loadBlocks() {
     try {
-      const response = await fetch(
+      const response = await this.retryFetch(
         `${this.serverUrl}/api/blocks/load?userId=${this.userId}`
       );
       const result = await response.json();
 
-      if (result.success) {
-        console.log(`✓ Loaded ${result.blocks.length} blocks from server`);
-        return result.blocks;
+      if (response.ok && result.success) {
+        console.log(`✓ Loaded ${result.blocks?.length || 0} blocks from server`);
+        return result.blocks || [];
       } else {
-        console.error('❌ Load failed:', result.error);
+        console.warn('⚠️ Load request returned non-success:', result.error);
         return [];
       }
     } catch (error) {
-      console.error('❌ Load error:', error);
+      console.error('❌ Load error after retries:', error);
+      console.log('ℹ️ Continuing with fresh world (no saved blocks)');
       return [];
     }
   }
