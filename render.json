@@ -1,0 +1,22 @@
+{
+  "buildCommand": "cd server && npm install",
+  "startCommand": "cd server && npm start",
+  "envVars": [
+    {
+      "key": "SUPABASE_URL",
+      "value": "https://supabase.co"
+    },
+    {
+      "key": "SUPABASE_ANON_KEY",
+      "value": "sb_publishable_-wq_H0QMbGrLf9C0pExkK_wE0wL"
+    },
+    {
+      "key": "PORT",
+      "value": "3000"
+    },
+    {
+      "key": "NODE_ENV",
+      "value": "production"
+    }
+  ]
+}
