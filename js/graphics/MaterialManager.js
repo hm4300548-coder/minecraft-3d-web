@@ -40,20 +40,19 @@ class MaterialManager {
   createMaterial(blockType) {
     const texture = this.textureManager.getTexture(blockType);
 
-    // تحسين الخامة
+    // تحسين الخامة (للأداء العالية)
     texture.magFilter = THREE.NearestFilter;
-    texture.minFilter = THREE.NearestMipmapLinearFilter; // أفضل للجودة
-    texture.anisotropy = CONSTANTS.GRAPHICS.ANISOTROPY || 4;
-    texture.generateMipmaps = true;
+    texture.minFilter = THREE.NearestFilter; // أسرع
+    texture.anisotropy = CONSTANTS.GRAPHICS.ANISOTROPY || 1;
+    texture.generateMipmaps = false; // تعطيل للأداء
 
-    const material = new THREE.MeshStandardMaterial({
+    // استخدام MeshPhongMaterial (أسرع من MeshStandardMaterial)
+    const material = new THREE.MeshPhongMaterial({
       map: texture,
       side: THREE.FrontSide,
-      metalness: this.getMetalness(blockType),
-      roughness: this.getRoughness(blockType),
-      wireframe: false,
-      flatShading: CONSTANTS.GRAPHICS.FLAT_SHADING || false,
-      envMapIntensity: 0.3, // إضافة بريق بسيط
+      flatShading: CONSTANTS.GRAPHICS.FLAT_SHADING || true,
+      shininess: 0,
+      wireframe: false
     });
 
     this.materials[blockType] = material;
@@ -75,23 +74,6 @@ class MaterialManager {
     }
   }
 
-  // ===== الحصول على معامل الخشونة =====
-  getRoughness(blockType) {
-    switch (blockType) {
-      case CONSTANTS.BLOCK_TYPES.STONE:
-        return 0.75; // حجر خشن
-      case CONSTANTS.BLOCK_TYPES.DIRT:
-        return 0.88; // تراب خشن
-      case CONSTANTS.BLOCK_TYPES.GRASS:
-        return 0.8;  // عشب
-      case CONSTANTS.BLOCK_TYPES.WOOD:
-        return 0.65; // خشب ناعم
-      case CONSTANTS.BLOCK_TYPES.LEAVES:
-        return 0.55; // أوراق ناعمة
-      default:
-        return 0.8;
-    }
-  }
 
   // ===== الحصول على مادة =====
   getMaterial(blockType) {

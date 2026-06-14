@@ -50,22 +50,20 @@ class SceneManager {
   // ===== إنشاء سماء متدرجة =====
   createGradientSky() {
     const canvas = document.createElement('canvas');
-    canvas.width = 512;
-    canvas.height = 512;
+    canvas.width = 256;
+    canvas.height = 256;
     const ctx = canvas.getContext('2d');
 
-    // رسم متدرج من الأزرق الفاتح في الأعلى إلى الأزرق الأفتح نحو الأفق
+    // رسم متدرج سريع من الأزرق
     const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, '#5B9FD1');    // أزرق سماوي محسّن في الأعلى
-    gradient.addColorStop(0.4, '#87CEEB'); // أزرق فاتح
-    gradient.addColorStop(0.7, '#B8E0F0'); // أزرق فاتح جداً
-    gradient.addColorStop(1, '#E8F4F8');   // أبيض مزرق قرب الأفق
+    gradient.addColorStop(0, '#6BA3D0');    // أزرق سماوي في الأعلى
+    gradient.addColorStop(0.5, '#87CEEB'); // أزرق فاتح
+    gradient.addColorStop(1, '#B8E0F0');   // أزرق فاتح نحو الأفق
 
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     const texture = new THREE.CanvasTexture(canvas);
-    texture.needsUpdate = true;
     this.scene.background = texture;
   }
 
@@ -74,16 +72,18 @@ class SceneManager {
     const container = document.getElementById('canvas-container');
 
     this.renderer = new THREE.WebGLRenderer({
-      antialias: false,  // Disable for performance
+      antialias: false,
       powerPreference: 'high-performance',
       alpha: false,
-      precision: 'lowp'
+      precision: 'lowp',
+      stencil: false,
+      depth: true
     });
 
-    // إعدادات الـ Renderer (optimized for performance)
+    // إعدادات الـ Renderer (aggressive optimization)
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Cap pixel ratio
-    this.renderer.shadowMap.enabled = false;  // Disable shadows by default
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.0)); // Low pixel ratio
+    this.renderer.shadowMap.enabled = false;
     this.renderer.toneMapping = THREE.NoToneMapping;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
 
@@ -91,7 +91,7 @@ class SceneManager {
     container.appendChild(this.renderer.domElement);
 
     if (CONSTANTS.DEBUG) {
-      console.log('✓ Renderer created successfully (optimized for 60+ FPS)');
+      console.log('✓ Renderer created (aggressive optimization for maximum FPS)');
     }
   }
 

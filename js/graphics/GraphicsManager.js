@@ -96,22 +96,17 @@ class GraphicsManager {
   configureRenderer() {
     // تحسين دقة الرسم
     this.renderer.setPixelRatio(
-      Math.min(window.devicePixelRatio, CONSTANTS.GRAPHICS.MAX_PIXEL_RATIO || 2)
+      Math.min(window.devicePixelRatio, CONSTANTS.GRAPHICS.MAX_PIXEL_RATIO || 1.0)
     );
 
     // تفعيل الألوان الخطية
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-    // تحسين معالجة الألوان
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping; // أفضل من Reinhard
-    this.renderer.toneMappingExposure = CONSTANTS.GRAPHICS.TONE_MAPPING_EXPOSURE || 1.05;
-
-    // تحسين الجودة
-    this.renderer.gammaInput = true;
-    this.renderer.gammaOutput = true;
+    // تعطيل معالجة الألوان الثقيلة
+    this.renderer.toneMapping = THREE.NoToneMapping;
 
     if (CONSTANTS.DEBUG) {
-      console.log('🎯 Graphics optimized for best quality');
+      console.log('⚡ Graphics optimized for maximum performance');
     }
   }
 

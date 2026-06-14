@@ -17,19 +17,19 @@ const CONSTANTS = {
     WIDTH: 16,           // عرض الـ Chunk (16x16x16 كتلة)
     HEIGHT: 16,          // ارتفاع الـ Chunk
     DEPTH: 16,           // عمق الـ Chunk
-    RENDER_DISTANCE: 2,  // عدد الـ Chunks حول اللاعب (optimized: 2 = 125 chunks for better visibility)
+    RENDER_DISTANCE: 1,  // عدد الـ Chunks حول اللاعب (optimized: 1 = 27 chunks for fast performance)
   },
 
   // ===== TERRAIN GENERATION CONFIG =====
   TERRAIN: {
     SEED: 12345,         // البذرة العشوائية لتوليد متطابق
-    SCALE: 40,           // حجم التضاريس (أكبر = تضاريس أكثر سلاسة) - reduced for more variety
-    OCTAVES: 4,          // عدد طبقات Perlin Noise - balance between detail and performance
-    PERSISTENCE: 0.55,   // تأثير الطبقات الكبيرة - slightly increased
-    LACUNARITY: 2.1,     // تكرار التفاصيل
-    AMPLITUDE: 16,       // ارتفاع التلال - increased for more dramatic terrain
-    WATER_LEVEL: 4,      // مستوى الماء - lowered slightly
-    GRASS_LEVEL: 7,      // ارتفاع الأرضية العشبية
+    SCALE: 50,           // حجم التضاريس (أكبر = تضاريس أكثر سلاسة)
+    OCTAVES: 3,          // عدد طبقات Perlin Noise - fast generation
+    PERSISTENCE: 0.5,    // تأثير الطبقات الكبيرة
+    LACUNARITY: 2.0,     // تكرار التفاصيل
+    AMPLITUDE: 15,       // ارتفاع التلال
+    WATER_LEVEL: 5,      // مستوى الماء
+    GRASS_LEVEL: 8,      // ارتفاع الأرضية العشبية
   },
 
   // ===== CAMERA CONFIG =====
@@ -111,28 +111,28 @@ const CONSTANTS = {
 
   // ===== ENVIRONMENT CONFIG =====
   ENVIRONMENT: {
-    TREE_CHANCE: 0.08,        // احتمالية وجود شجرة - increased for richer world
-    CAVE_CHANCE: 0.12,        // احتمالية وجود كهف
-    CAVE_SIZE: 2.5,           // حجم الكهوف
-    TREE_DENSITY: 0.08,       // كثافة الأشجار - increased
+    TREE_CHANCE: 0.03,        // احتمالية وجود شجرة - reduced for performance
+    CAVE_CHANCE: 0.08,        // احتمالية وجود كهف - reduced
+    CAVE_SIZE: 2,             // حجم الكهوف
+    TREE_DENSITY: 0.03,       // كثافة الأشجار - reduced
   },
 
   // ===== GRAPHICS CONFIG =====
   GRAPHICS: {
     FOG_ENABLED: true,            // تفعيل الضباب
-    FOG_NEAR: 60,                 // بداية الضباب - increased slightly
-    FOG_FAR: 600,                 // نهاية الضباب - increased for better view
+    FOG_NEAR: 50,                 // بداية الضباب
+    FOG_FAR: 300,                 // نهاية الضباب - reduced for performance
     SHADOWS_ENABLED: false,       // تعطيل الظلال لأداء أفضل
-    SHADOW_QUALITY: 1024,         // دقة منخفضة (إذا تم تفعيل الظلال)
+    SHADOW_QUALITY: 1024,         // دقة منخفضة
     SHADOW_FAR: 200,              // بعد منخفض للظلال
     ANTIALIASING: false,          // تعطيل AA لأداء أفضل
-    MAX_PIXEL_RATIO: 1.8,         // تحسين الدقة قليلاً للجودة
-    AMBIENT_INTENSITY: 0.85,      // زيادة الضوء المحيط للمظهر الأفضل
-    DIRECTIONAL_INTENSITY: 0.9,   // الضوء الموجه محسّن
-    TONE_MAPPING_EXPOSURE: 1.05,  // تعريض معالجة الألوان محسّن
-    ANISOTROPY: 4,                // تحسين التصفية الخواصية
+    MAX_PIXEL_RATIO: 1.0,         // دقة بكسل منخفضة للأداء
+    AMBIENT_INTENSITY: 0.8,       // الضوء المحيط
+    DIRECTIONAL_INTENSITY: 0.8,   // الضوء الموجه
+    TONE_MAPPING_EXPOSURE: 1.0,   // تعريض معالجة الألوان
+    ANISOTROPY: 1,                // تصفية خواصية منخفضة
     FLAT_SHADING: true,           // استخدام Flat Shading (أسرع)
-    QUALITY_LEVEL: 'medium-high', // مستوى جودة محسّن
+    QUALITY_LEVEL: 'low',         // مستوى جودة منخفض للأداء السريع
   },
 
   // ===== DEBUG =====
