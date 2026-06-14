@@ -1,0 +1,35 @@
+{
+  "name": "minecraft-3d-server",
+  "version": "1.0.0",
+  "description": "Backend server for Minecraft 3D Web Game - Supabase Integration",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "install-deps": "npm install"
+  },
+  "keywords": [
+    "minecraft",
+    "3d",
+    "game",
+    "server",
+    "supabase",
+    "database"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.4",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "body-parser": "^1.20.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

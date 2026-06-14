@@ -3,12 +3,14 @@
 // ==========================================
 
 import CONSTANTS from '../utils/Constants.js';
+import BlockStorage from '../utils/BlockStorage.js';
 
 class BlockInteraction {
-  constructor(player, world, audioManager = null) {
+  constructor(player, world, audioManager = null, blockStorage = null) {
     this.player = player;
     this.world = world;
     this.audioManager = audioManager;
+    this.blockStorage = blockStorage;
 
     // معلومات الكتلة المختارة حالياً
     this.selectedBlock = null;
@@ -104,6 +106,15 @@ class BlockInteraction {
         this.audioManager.playSound('break');
       }
 
+      // حفظ الحذف في قاعدة البيانات
+      if (this.blockStorage) {
+        this.blockStorage.deleteBlock(
+          blockData.blockX,
+          blockData.blockY,
+          blockData.blockZ
+        );
+      }
+
       if (CONSTANTS.DEBUG) {
         console.log(`🔨 Block broken at (${blockData.blockX}, ${blockData.blockY}, ${blockData.blockZ})`);
       }
@@ -151,6 +162,16 @@ class BlockInteraction {
       // تشغيل صوت البناء
       if (this.audioManager) {
         this.audioManager.playSound('place');
+      }
+
+      // حفظ الكتلة الجديدة في قاعدة البيانات
+      if (this.blockStorage) {
+        this.blockStorage.saveBlock(
+          adjacentBlock.x,
+          adjacentBlock.y,
+          adjacentBlock.z,
+          this.selectedBlockType
+        );
       }
 
       if (CONSTANTS.DEBUG) {

@@ -9,12 +9,13 @@ import Physics from '../physics/Physics.js';
 import CollisionDetector from '../physics/CollisionDetector.js';
 
 class Player {
-  constructor(cameraManager, world = null, audioManager = null) {
+  constructor(cameraManager, world = null, audioManager = null, blockStorage = null) {
     this.cameraManager = cameraManager;
     this.inputManager = new InputManager();
     this.blockInteraction = null;
     this.world = world;
     this.audioManager = audioManager;
+    this.blockStorage = blockStorage;
 
     // أنظمة الفيزياء
     this.collisionDetector = null;
@@ -65,7 +66,7 @@ class Player {
     if (this.world) {
       this.collisionDetector = new CollisionDetector(this.world);
       this.physics = new Physics(this.world, this.collisionDetector);
-      this.blockInteraction = new BlockInteraction(this, this.world, this.audioManager);
+      this.blockInteraction = new BlockInteraction(this, this.world, this.audioManager, this.blockStorage);
     }
 
     if (CONSTANTS.DEBUG) {
@@ -330,7 +331,7 @@ class Player {
   setWorld(world) {
     this.world = world;
     if (!this.blockInteraction && world) {
-      this.blockInteraction = new BlockInteraction(this, world, this.audioManager);
+      this.blockInteraction = new BlockInteraction(this, world, this.audioManager, this.blockStorage);
     }
     if (!this.collisionDetector && world) {
       this.collisionDetector = new CollisionDetector(world);

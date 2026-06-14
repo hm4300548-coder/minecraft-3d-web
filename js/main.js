@@ -9,6 +9,7 @@ import Player from './player/Player.js';
 import World2 from './world/World2.js';
 import UI from './ui/UI.js';
 import AudioManager from './audio/AudioManager.js';
+import BlockStorage from './utils/BlockStorage.js';
 
 class Game {
   constructor() {
@@ -18,6 +19,7 @@ class Game {
     this.world = null;
     this.ui = null;
     this.audioManager = null;
+    this.blockStorage = null;
     this.running = false;
     this.frameCount = 0;
     this.lastTime = Date.now();
@@ -27,12 +29,15 @@ class Game {
   }
 
   // ===== تهيئة اللعبة =====
-  init() {
+  async init() {
     console.log('🎮 Starting Minecraft-Like 3D Game...');
 
     // إنشاء Audio Manager (نظام الصوت والموسيقى)
     this.audioManager = new AudioManager();
     this.audioManager.playMusic('ambient');
+
+    // إنشاء Block Storage (نظام حفظ الكتل في قاعدة البيانات)
+    this.blockStorage = new BlockStorage('http://localhost:3000', 'default');
 
     // إنشاء Scene Manager (إدارة المشهد والإضاءة)
     this.sceneManager = new SceneManager();
@@ -44,11 +49,14 @@ class Game {
     this.world = new World2(this.sceneManager, this.cameraManager.getCamera());
 
     // إنشاء Player (إدارة اللاعب والحركة)
-    // تمرير World و AudioManager ليتمكن Player من التفاعل مع الكتل والصوت
-    this.player = new Player(this.cameraManager, this.world, this.audioManager);
+    // تمرير World و AudioManager و BlockStorage ليتمكن Player من التفاعل مع الكتل والصوت والحفظ
+    this.player = new Player(this.cameraManager, this.world, this.audioManager, this.blockStorage);
 
     // إنشاء UI (واجهة المستخدم)
     this.ui = new UI(this);
+
+    // تحميل الكتل المحفوظة من قاعدة البيانات
+    await this.loadSavedBlocks();
 
     // تفعيل وضع التصحيح إذا لزم الأمر
     if (CONSTANTS.DEBUG) {
@@ -64,6 +72,30 @@ class Game {
       `${CONSTANTS.WORLD.WIDTH}x${CONSTANTS.WORLD.HEIGHT}x${CONSTANTS.WORLD.DEPTH}`);
     console.log('⌨️ Controls:');
     console.log('  WASD - Move | Space/C - Fly Up/Down | Shift - Sprint | ESC - Unlock Mouse');
+  }
+
+  // ===== تحميل الكتل المحفوظة من قاعدة البيانات =====
+  async loadSavedBlocks() {
+    try {
+      console.log('📦 Loading saved blocks from database...');
+      const blocks = await this.blockStorage.loadBlocks();
+
+      if (blocks && blocks.length > 0) {
+        console.log(`✓ Loaded ${blocks.length} blocks from database`);
+
+        // إضافة الكتل المحملة إلى العالم
+        blocks.forEach(block => {
+          this.world.setBlock(block.x, block.y, block.z, block.block_type);
+        });
+
+        console.log(`✓ Added ${blocks.length} blocks to the world`);
+      } else {
+        console.log('ℹ️  No saved blocks found, starting with fresh world');
+      }
+    } catch (error) {
+      console.error('❌ Error loading saved blocks:', error);
+      console.log('ℹ️  Continuing with fresh world...');
+    }
   }
 
   // ===== حلقة اللعبة الرئيسية =====
@@ -199,6 +231,11 @@ class Game {
   // ===== الحصول على Audio Manager =====
   getAudioManager() {
     return this.audioManager;
+  }
+
+  // ===== الحصول على Block Storage =====
+  getBlockStorage() {
+    return this.blockStorage;
   }
 }
 
