@@ -28,35 +28,128 @@ class Game {
     this.init();
   }
 
-  // ===== تهيئة اللعبة =====
-  async init() {
-    console.log('🎮 Starting Minecraft-Like 3D Game...');
+  // ===== تهيئة المقدمة (القائمة الرئيسية) =====
+  init() {
+    console.log('🎮 Minecraft-Like 3D Game - Initializing Menu System...');
+    this.setupMenuHandlers();
+  }
+
+  // ===== إعداد معالجات القائمة الرئيسية =====
+  setupMenuHandlers() {
+    const singleplayerBtn = document.getElementById('singleplayer-btn');
+    const settingsBtn = document.getElementById('settings-menu-btn');
+    const quitBtn = document.getElementById('quit-btn');
+
+    if (singleplayerBtn) {
+      singleplayerBtn.addEventListener('click', () => this.startSinglePlayer());
+    }
+
+    if (settingsBtn) {
+      settingsBtn.addEventListener('click', () => {
+        console.log('⚙️ Settings clicked (not yet implemented)');
+      });
+    }
+
+    if (quitBtn) {
+      quitBtn.addEventListener('click', () => {
+        console.log('👋 Quitting game...');
+        window.close();
+      });
+    }
+
+    console.log('✓ Menu handlers initialized');
+  }
+
+  // ===== بدء لعبة Single Player =====
+  async startSinglePlayer() {
+    console.log('🎮 Starting Single Player...');
+
+    // إخفاء القائمة الرئيسية
+    const mainMenu = document.getElementById('main-menu');
+    if (mainMenu) {
+      mainMenu.style.display = 'none';
+    }
+
+    // إظهار شاشة التحميل
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+      loadingScreen.style.display = 'flex';
+    }
+
+    // تحديث شريط التقدم
+    this.updateLoadingProgress(10);
+
+    try {
+      // تهيئة اللعبة
+      await this.initializeGame();
+
+      // إخفاء شاشة التحميل
+      setTimeout(() => {
+        if (loadingScreen) {
+          loadingScreen.style.display = 'none';
+        }
+      }, 500);
+
+      console.log('✓ Game ready to play!');
+    } catch (error) {
+      console.error('❌ Error starting game:', error);
+      // إعادة إظهار القائمة الرئيسية في حالة الخطأ
+      if (mainMenu) {
+        mainMenu.style.display = 'flex';
+      }
+      if (loadingScreen) {
+        loadingScreen.style.display = 'none';
+      }
+    }
+  }
+
+  // ===== تحديث شريط التقدم =====
+  updateLoadingProgress(percentage) {
+    const progressBar = document.getElementById('loading-progress');
+    if (progressBar) {
+      progressBar.style.width = percentage + '%';
+    }
+  }
+
+  // ===== تهيئة اللعبة الفعلية =====
+  async initializeGame() {
+    console.log('⏳ Initializing game components...');
+
+    this.updateLoadingProgress(15);
 
     // إنشاء Audio Manager (نظام الصوت والموسيقى)
     this.audioManager = new AudioManager();
+    this.updateLoadingProgress(25);
+
     this.audioManager.playMusic('ambient');
 
     // إنشاء Block Storage (نظام حفظ الكتل في قاعدة البيانات)
     this.blockStorage = new BlockStorage('http://localhost:3000', 'default');
+    this.updateLoadingProgress(35);
 
     // إنشاء Scene Manager (إدارة المشهد والإضاءة)
     this.sceneManager = new SceneManager();
+    this.updateLoadingProgress(45);
 
     // إنشاء Camera Manager (إدارة الكاميرا)
     this.cameraManager = new CameraManager(this.sceneManager);
+    this.updateLoadingProgress(55);
 
     // إنشاء World2 (عالم بلا نهاية مع Chunks)
     this.world = new World2(this.sceneManager, this.cameraManager.getCamera());
+    this.updateLoadingProgress(65);
 
     // إنشاء Player (إدارة اللاعب والحركة)
-    // تمرير World و AudioManager و BlockStorage ليتمكن Player من التفاعل مع الكتل والصوت والحفظ
     this.player = new Player(this.cameraManager, this.world, this.audioManager, this.blockStorage);
+    this.updateLoadingProgress(75);
 
     // إنشاء UI (واجهة المستخدم)
     this.ui = new UI(this);
+    this.updateLoadingProgress(85);
 
     // تحميل الكتل المحفوظة من قاعدة البيانات
     await this.loadSavedBlocks();
+    this.updateLoadingProgress(95);
 
     // تفعيل وضع التصحيح إذا لزم الأمر
     if (CONSTANTS.DEBUG) {
@@ -66,6 +159,8 @@ class Game {
     // بدء حلقة اللعبة الرئيسية
     this.running = true;
     this.startGameLoop();
+
+    this.updateLoadingProgress(100);
 
     console.log('✓ Game initialized successfully!');
     console.log('📐 World Size:',
