@@ -21,6 +21,10 @@ class ChunkManager {
     // الـ Chunk السابق (لتتبع حركة اللاعب)
     this.lastChunk = null;
 
+    // قائمة انتظار للـ Chunks المراد رسمها (لتجنب التجميد)
+    this.meshQueue = [];
+    this.meshesPerFrame = 2; // عدد الـ Meshes المراد رسمها في الإطار الواحد
+
     // إحصائيات
     this.totalChunksLoaded = 0;
     this.totalChunksMeshed = 0;
@@ -84,19 +88,20 @@ class ChunkManager {
       playerPos.z
     );
 
-    // إذا لم يتغير الـ Chunk، لا تفعل شيء
+    // إذا لم يتغير الـ Chunk، فقط معالجة قائمة الانتظار
     if (
       this.lastChunk &&
       this.lastChunk.cx === cx &&
       this.lastChunk.cy === cy &&
       this.lastChunk.cz === cz
     ) {
+      this.processMeshQueue();
       return;
     }
 
     this.lastChunk = { cx, cy, cz };
 
-    // تحميل ورسم الـ Chunks حول اللاعب
+    // تحميل الـ Chunks حول اللاعب وإضافتها لقائمة الانتظار
     for (let dx = -this.renderDistance; dx <= this.renderDistance; dx++) {
       for (let dy = -1; dy <= 1; dy++) {  // ارتفاع محدود
         for (let dz = -this.renderDistance; dz <= this.renderDistance; dz++) {
@@ -107,14 +112,29 @@ class ChunkManager {
           // تحميل الـ Chunk
           const chunk = this.getOrLoadChunk(ncx, ncy, ncz);
 
-          // رسم الـ Chunk
-          this.meshChunk(ncx, ncy, ncz);
+          // إضافة للقائمة بدلاً من الرسم الفوري
+          if (!chunk.isMeshed) {
+            this.meshQueue.push({ cx: ncx, cy: ncy, cz: ncz });
+          }
         }
       }
     }
 
+    // معالجة جزء من قائمة الانتظار في هذا الإطار
+    this.processMeshQueue();
+
     // تفريغ الـ Chunks البعيدة
     this.unloadFarChunks(cx, cy, cz);
+  }
+
+  // ===== معالجة قائمة الانتظار تدريجياً =====
+  processMeshQueue() {
+    const meshCount = Math.min(this.meshesPerFrame, this.meshQueue.length);
+
+    for (let i = 0; i < meshCount; i++) {
+      const { cx, cy, cz } = this.meshQueue.shift();
+      this.meshChunk(cx, cy, cz);
+    }
   }
 
   // ===== تفريغ الـ Chunks البعيدة =====
