@@ -1,32 +1,347 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Minecraft 3D - Web Game</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #000;
+      font-family: Arial, sans-serif;
+    }
+
+    #game-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    #canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    #ui-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    #crosshair {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    #crosshair::before,
+    #crosshair::after {
+      content: '';
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    #crosshair::before {
+      width: 8px;
+      height: 1px;
+      top: 50%;
+      left: -10px;
+      transform: translateY(-50%);
+    }
+
+    #crosshair::after {
+      width: 1px;
+      height: 8px;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #hud-container {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      color: #fff;
+      font-size: 12px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    #health-bar {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 10px;
+    }
+
+    .health-point {
+      width: 8px;
+      height: 8px;
+      background-color: #ff0000;
+      border: 1px solid #8b0000;
+    }
+
+    .health-point.empty {
+      background-color: transparent;
+      border-color: #666;
+    }
+
+    #hotbar {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+    }
+
+    .hotbar-slot {
+      width: 40px;
+      height: 40px;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
+    .hotbar-slot.selected {
+      border-color: #fff;
+      background-color: rgba(100, 100, 100, 0.7);
+    }
+
+    #debug-info {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #0f0;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 12px;
+      border: 1px solid #0f0;
+      pointer-events: auto;
+    }
+
+    #debug-info p {
+      margin: 2px 0;
+    }
+
+    #pause-menu {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.9);
+      padding: 40px;
+      border: 2px solid #fff;
+      display: none;
+      z-index: 1000;
+      text-align: center;
+      pointer-events: auto;
+    }
+
+    #pause-menu h1 {
+      color: #fff;
+      margin-bottom: 30px;
+      font-size: 32px;
+    }
+
+    #pause-menu button {
+      display: block;
+      width: 200px;
+      margin: 10px auto;
+      padding: 10px;
+      background-color: #2c3e50;
+      color: #fff;
+      border: 1px solid #fff;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #pause-menu button:hover {
+      background-color: #34495e;
+    }
+
+    #inventory-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.95);
+      padding: 20px;
+      display: none;
+      z-index: 999;
+      pointer-events: auto;
+      border: 3px solid #8b8b8b;
+    }
+
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(9, 40px);
+      gap: 5px;
+      margin-bottom: 20px;
+    }
+
+    .inventory-slot {
+      width: 40px;
+      height: 40px;
+      background-color: rgba(100, 100, 100, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+    }
+
+    #chat-box {
+      position: absolute;
+      bottom: 100px;
+      left: 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 5px;
+      max-width: 300px;
+      font-size: 12px;
+      pointer-events: auto;
+    }
+
+    .chat-message {
+      margin: 2px 0;
+    }
+
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #1a1a2e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      flex-direction: column;
+    }
+
+    #loading-text {
+      color: #fff;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .loading-bar {
+      width: 200px;
+      height: 20px;
+      background-color: #333;
+      border: 1px solid #fff;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .loading-progress {
+      height: 100%;
+      width: 0%;
+      background-color: #00ff00;
+      transition: width 0.1s ease;
+    }
+  </style>
 </head>
 <body>
-  <!-- 3D Canvas Container -->
-  <div id="canvas-container"></div>
+  <div id="game-container">
+    <!-- Canvas for Three.js -->
+    <canvas id="canvas"></canvas>
 
-  <!-- UI Container -->
-  <div id="ui-container">
-    <!-- Crosshair (تقاطع المؤشر) -->
-    <div id="crosshair"></div>
+    <!-- UI Container -->
+    <div id="ui-container">
+      <!-- Crosshair -->
+      <div id="crosshair"></div>
 
-    <!-- Debug Info -->
-    <div id="debug-info" style="display: none;">
-      <p>FPS: <span id="fps">0</span></p>
-      <p>Position: <span id="pos">0, 0, 0</span></p>
-      <p>Chunks Loaded: <span id="chunks">0</span></p>
+      <!-- Debug Info Panel -->
+      <div id="debug-info" style="display: none;">
+        <p>FPS: <span id="fps">0</span></p>
+        <p>Position: X: <span id="pos-x">0</span> Y: <span id="pos-y">0</span> Z: <span id="pos-z">0</span></p>
+        <p>Chunks Loaded: <span id="chunks">0</span></p>
+        <p>Draw Calls: <span id="draw-calls">0</span></p>
+      </div>
+
+      <!-- Chat Box -->
+      <div id="chat-box"></div>
+
+      <!-- HUD (Health, Hotbar) -->
+      <div id="hud-container">
+        <div id="health-bar">
+          <div class="health-point"></div>
+          <div class="health-point"></div>
+          <div class="health-point"></div>
+          <div class="health-point"></div>
+          <div class="health-point"></div>
+          <div class="health-point"></div>
+          <div class="health-point"></div>
+          <div class="health-point"></div>
+          <div class="health-point"></div>
+          <div class="health-point"></div>
+        </div>
+        <div id="hotbar">
+          <div class="hotbar-slot selected" data-slot="0">1</div>
+          <div class="hotbar-slot" data-slot="1">2</div>
+          <div class="hotbar-slot" data-slot="2">3</div>
+          <div class="hotbar-slot" data-slot="3">4</div>
+          <div class="hotbar-slot" data-slot="4">5</div>
+          <div class="hotbar-slot" data-slot="5">6</div>
+          <div class="hotbar-slot" data-slot="6">7</div>
+          <div class="hotbar-slot" data-slot="7">8</div>
+          <div class="hotbar-slot" data-slot="8">9</div>
+        </div>
+      </div>
+
+      <!-- Pause Menu -->
+      <div id="pause-menu">
+        <h1>PAUSED</h1>
+        <button id="resume-btn">Resume Game (ESC)</button>
+        <button id="settings-btn">Settings</button>
+        <button id="exit-btn">Exit to Main Menu</button>
+      </div>
+
+      <!-- Inventory Container -->
+      <div id="inventory-container">
+        <h2 style="color: #fff; margin-bottom: 20px;">Inventory</h2>
+        <div class="inventory-grid" id="inventory-grid"></div>
+        <button id="close-inventory" style="width: 100%; padding: 10px; background-color: #2c3e50; color: #fff; border: 1px solid #fff; cursor: pointer;">Close (E)</button>
+      </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div id="loading-text">Loading Minecraft 3D...</div>
+      <div class="loading-bar">
+        <div class="loading-progress" id="loading-progress"></div>
+      </div>
     </div>
   </div>
 
   <!-- Three.js Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-  <!-- Game Scripts (Module System) -->
+  <!-- CannonES (Physics Engine) -->
+  <script src="https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"></script>
+
+  <!-- Game Module System -->
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
