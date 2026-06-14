@@ -1,63 +1,64 @@
 // ============================================
 // MINECRAFT-LIKE 3D GAME - CONSTANTS & CONFIG
+// ULTRA-LIGHT VERSION FOR ALL DEVICES
 // ============================================
 
 const CONSTANTS = {
   // ===== WORLD CONFIG =====
   WORLD: {
-    WIDTH: 32,           // عرض العالم (عدد الكتل) - مهمل إذا استخدمنا Chunks
-    HEIGHT: 32,          // ارتفاع العالم
-    DEPTH: 32,           // عمق العالم - مهمل إذا استخدمنا Chunks
-    BLOCK_SIZE: 1,       // حجم الكتلة الواحدة (وحدة)
-    INFINITE: true,      // تفعيل عالم لا نهائي
+    WIDTH: 32,
+    HEIGHT: 32,
+    DEPTH: 32,
+    BLOCK_SIZE: 1,
+    INFINITE: true,
   },
 
   // ===== CHUNK CONFIG =====
   CHUNK: {
-    WIDTH: 16,           // عرض الـ Chunk (16x16x16 كتلة)
-    HEIGHT: 16,          // ارتفاع الـ Chunk
-    DEPTH: 16,           // عمق الـ Chunk
-    RENDER_DISTANCE: 1,  // عدد الـ Chunks حول اللاعب (optimized: 1 = 27 chunks for fast performance)
+    WIDTH: 8,            // تقليل من 16 إلى 8 - أخف جداً
+    HEIGHT: 8,           // تقليل من 16 إلى 8
+    DEPTH: 8,            // تقليل من 16 إلى 8
+    RENDER_DISTANCE: 0,  // فقط الـ chunk الحالي (9 chunks فقط!)
   },
 
   // ===== TERRAIN GENERATION CONFIG =====
   TERRAIN: {
-    SEED: 12345,         // البذرة العشوائية لتوليد متطابق
-    SCALE: 50,           // حجم التضاريس (أكبر = تضاريس أكثر سلاسة)
-    OCTAVES: 3,          // عدد طبقات Perlin Noise - fast generation
-    PERSISTENCE: 0.5,    // تأثير الطبقات الكبيرة
-    LACUNARITY: 2.0,     // تكرار التفاصيل
-    AMPLITUDE: 15,       // ارتفاع التلال
-    WATER_LEVEL: 5,      // مستوى الماء
-    GRASS_LEVEL: 8,      // ارتفاع الأرضية العشبية
+    SEED: 12345,
+    SCALE: 60,           // أكبر = أسهل (أقل تفاصيل)
+    OCTAVES: 2,          // تقليل من 3 إلى 2 - سريع جداً
+    PERSISTENCE: 0.4,
+    LACUNARITY: 2.0,
+    AMPLITUDE: 12,
+    WATER_LEVEL: 4,
+    GRASS_LEVEL: 6,
   },
 
   // ===== CAMERA CONFIG =====
   CAMERA: {
-    FOV: 75,             // زاوية الرؤية
-    NEAR: 0.1,           // القريب من الكاميرا
-    FAR: 1000,           // البعيد من الكاميرا
-    SPEED: 0.1,          // سرعة الحركة
-    SPRINT_SPEED: 0.2,   // سرعة الجري
+    FOV: 75,
+    NEAR: 0.1,
+    FAR: 200,            // تقليل من 1000 إلى 200
+    SPEED: 0.15,         // أسرع قليلاً
+    SPRINT_SPEED: 0.3,
   },
 
   // ===== LIGHTING CONFIG =====
   LIGHTING: {
-    AMBIENT_COLOR: 0xffffff,      // لون الضوء المحيط
-    AMBIENT_INTENSITY: 0.7,       // شدة الضوء المحيط - محسّن
-    DIRECTIONAL_COLOR: 0xFFF8DC,  // لون الضوء الموجه - أكثر دفئاً
-    DIRECTIONAL_INTENSITY: 0.95,  // شدة الضوء الموجه - محسّن
-    SHADOW_MAP_SIZE: 2048,        // دقة الظلال
+    AMBIENT_COLOR: 0xffffff,
+    AMBIENT_INTENSITY: 0.9,      // إضاءة قوية
+    DIRECTIONAL_COLOR: 0xffffff,
+    DIRECTIONAL_INTENSITY: 0.8,
+    SHADOW_MAP_SIZE: 2048,
   },
 
   // ===== PLAYER CONFIG =====
   PLAYER: {
-    START_X: 16,         // موقع البداية X
-    START_Y: 20,         // موقع البداية Y (الارتفاع)
-    START_Z: 16,         // موقع البداية Z
-    HEIGHT: 1.7,         // ارتفاع اللاعب (الكاميرا)
-    SPEED: 0.1,          // السرعة الأساسية
-    GRAVITY: 0.01,       // الجاذبية (في Creative لا نستخدمها كثيراً)
+    START_X: 8,
+    START_Y: 15,
+    START_Z: 8,
+    HEIGHT: 1.7,
+    SPEED: 0.1,
+    GRAVITY: 0.01,
   },
 
   // ===== CONTROLS CONFIG =====
@@ -66,7 +67,7 @@ const CONSTANTS = {
     MOVE_BACKWARD: 's',
     MOVE_LEFT: 'a',
     MOVE_RIGHT: 'd',
-    JUMP: ' ',           // مفتاح المسافة
+    JUMP: ' ',
     SPRINT: 'shift',
     FLY_UP: ' ',
     FLY_DOWN: 'c',
@@ -84,59 +85,59 @@ const CONSTANTS = {
 
   // ===== BLOCK COLORS =====
   BLOCK_COLORS: {
-    STONE: 0x7A7A7A,      // رمادي محسّن (أفتح)
-    DIRT: 0x8D5B2C,       // بني محسّن
-    GRASS: 0x2ECC71,      // أخضر مشع
-    WOOD: 0x6B4423,       // بني خشبي
-    LEAVES: 0x27AE60,     // أخضر حي
+    STONE: 0x808080,      // رمادي
+    DIRT: 0x8B7355,       // بني
+    GRASS: 0x2ECC71,      // أخضر
+    WOOD: 0x654321,       // بني خشب
+    LEAVES: 0x228B22,     // أخضر غامق
   },
 
   // ===== RENDERER CONFIG =====
   RENDERER: {
-    ANTIALIAS: false,           // Disabled for performance
-    SHADOW_MAP: false,          // Disabled for performance (60+ FPS target)
-    PIXEL_RATIO: window.devicePixelRatio || 1,
+    ANTIALIAS: false,
+    SHADOW_MAP: false,
+    PIXEL_RATIO: 1,
   },
 
   // ===== PHYSICS CONFIG =====
   PHYSICS: {
-    GRAVITY: 0.008,           // الجاذبية (قوة السقوط)
-    FRICTION: 0.8,            // الاحتكاك على الأرض (0-1)
-    JUMP_FORCE: 0.15,         // قوة القفز
-    JUMP_HEIGHT: 1.5,         // ارتفاع القفز التقريبي
-    MAX_FALL_SPEED: 0.3,      // أقصى سرعة سقوط
-    PLAYER_HEIGHT: 1.7,       // ارتفاع اللاعب
-    PLAYER_RADIUS: 0.3,       // نصف قطر اللاعب (للاصطدام)
+    GRAVITY: 0.008,
+    FRICTION: 0.8,
+    JUMP_FORCE: 0.15,
+    JUMP_HEIGHT: 1.5,
+    MAX_FALL_SPEED: 0.3,
+    PLAYER_HEIGHT: 1.7,
+    PLAYER_RADIUS: 0.3,
   },
 
   // ===== ENVIRONMENT CONFIG =====
   ENVIRONMENT: {
-    TREE_CHANCE: 0.03,        // احتمالية وجود شجرة - reduced for performance
-    CAVE_CHANCE: 0.08,        // احتمالية وجود كهف - reduced
-    CAVE_SIZE: 2,             // حجم الكهوف
-    TREE_DENSITY: 0.03,       // كثافة الأشجار - reduced
+    TREE_CHANCE: 0.01,        // 1% فقط
+    CAVE_CHANCE: 0.02,        // 2% فقط
+    CAVE_SIZE: 1.5,
+    TREE_DENSITY: 0.01,
   },
 
   // ===== GRAPHICS CONFIG =====
   GRAPHICS: {
-    FOG_ENABLED: true,            // تفعيل الضباب
-    FOG_NEAR: 50,                 // بداية الضباب
-    FOG_FAR: 300,                 // نهاية الضباب - reduced for performance
-    SHADOWS_ENABLED: false,       // تعطيل الظلال لأداء أفضل
-    SHADOW_QUALITY: 1024,         // دقة منخفضة
-    SHADOW_FAR: 200,              // بعد منخفض للظلال
-    ANTIALIASING: false,          // تعطيل AA لأداء أفضل
-    MAX_PIXEL_RATIO: 1.0,         // دقة بكسل منخفضة للأداء
-    AMBIENT_INTENSITY: 0.8,       // الضوء المحيط
-    DIRECTIONAL_INTENSITY: 0.8,   // الضوء الموجه
-    TONE_MAPPING_EXPOSURE: 1.0,   // تعريض معالجة الألوان
-    ANISOTROPY: 1,                // تصفية خواصية منخفضة
-    FLAT_SHADING: true,           // استخدام Flat Shading (أسرع)
-    QUALITY_LEVEL: 'low',         // مستوى جودة منخفض للأداء السريع
+    FOG_ENABLED: true,
+    FOG_NEAR: 30,
+    FOG_FAR: 150,
+    SHADOWS_ENABLED: false,
+    SHADOW_QUALITY: 512,
+    SHADOW_FAR: 100,
+    ANTIALIASING: false,
+    MAX_PIXEL_RATIO: 1.0,
+    AMBIENT_INTENSITY: 1.0,
+    DIRECTIONAL_INTENSITY: 1.0,
+    TONE_MAPPING_EXPOSURE: 1.0,
+    ANISOTROPY: 1,
+    FLAT_SHADING: true,
+    QUALITY_LEVEL: 'ultra-low',
   },
 
   // ===== DEBUG =====
-  DEBUG: true,                    // تفعيل وضع التصحيح
+  DEBUG: false,
 };
 
 export default CONSTANTS;

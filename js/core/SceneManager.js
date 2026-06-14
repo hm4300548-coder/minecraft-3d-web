@@ -47,24 +47,10 @@ class SceneManager {
     }
   }
 
-  // ===== إنشاء سماء متدرجة =====
+  // ===== إنشاء سماء بسيطة =====
   createGradientSky() {
-    const canvas = document.createElement('canvas');
-    canvas.width = 256;
-    canvas.height = 256;
-    const ctx = canvas.getContext('2d');
-
-    // رسم متدرج سريع من الأزرق
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, '#6BA3D0');    // أزرق سماوي في الأعلى
-    gradient.addColorStop(0.5, '#87CEEB'); // أزرق فاتح
-    gradient.addColorStop(1, '#B8E0F0');   // أزرق فاتح نحو الأفق
-
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    const texture = new THREE.CanvasTexture(canvas);
-    this.scene.background = texture;
+    // لون السماء البسيط (أسرع من التدرج)
+    this.scene.background = new THREE.Color(0x87CEEB);
   }
 
   // ===== إنشاء Renderer =====
