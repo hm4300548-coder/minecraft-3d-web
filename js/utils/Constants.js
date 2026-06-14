@@ -17,19 +17,19 @@ const CONSTANTS = {
     WIDTH: 16,           // عرض الـ Chunk (16x16x16 كتلة)
     HEIGHT: 16,          // ارتفاع الـ Chunk
     DEPTH: 16,           // عمق الـ Chunk
-    RENDER_DISTANCE: 1,  // عدد الـ Chunks حول اللاعب (optimized: 1 = 27 chunks instead of 729)
+    RENDER_DISTANCE: 2,  // عدد الـ Chunks حول اللاعب (optimized: 2 = 125 chunks for better visibility)
   },
 
   // ===== TERRAIN GENERATION CONFIG =====
   TERRAIN: {
     SEED: 12345,         // البذرة العشوائية لتوليد متطابق
-    SCALE: 50,           // حجم التضاريس (أكبر = تضاريس أكثر سلاسة)
-    OCTAVES: 3,          // عدد طبقات Perlin Noise (reduced from 5 for faster generation)
-    PERSISTENCE: 0.5,    // تأثير الطبقات الكبيرة
-    LACUNARITY: 2.0,     // تكرار التفاصيل
-    AMPLITUDE: 15,       // ارتفاع التلال (reduced from 20)
-    WATER_LEVEL: 5,      // مستوى الماء
-    GRASS_LEVEL: 8,      // ارتفاع الأرضية العشبية
+    SCALE: 40,           // حجم التضاريس (أكبر = تضاريس أكثر سلاسة) - reduced for more variety
+    OCTAVES: 4,          // عدد طبقات Perlin Noise - balance between detail and performance
+    PERSISTENCE: 0.55,   // تأثير الطبقات الكبيرة - slightly increased
+    LACUNARITY: 2.1,     // تكرار التفاصيل
+    AMPLITUDE: 16,       // ارتفاع التلال - increased for more dramatic terrain
+    WATER_LEVEL: 4,      // مستوى الماء - lowered slightly
+    GRASS_LEVEL: 7,      // ارتفاع الأرضية العشبية
   },
 
   // ===== CAMERA CONFIG =====
@@ -44,9 +44,9 @@ const CONSTANTS = {
   // ===== LIGHTING CONFIG =====
   LIGHTING: {
     AMBIENT_COLOR: 0xffffff,      // لون الضوء المحيط
-    AMBIENT_INTENSITY: 0.6,       // شدة الضوء المحيط
-    DIRECTIONAL_COLOR: 0xffffff,  // لون الضوء الموجه
-    DIRECTIONAL_INTENSITY: 0.8,   // شدة الضوء الموجه
+    AMBIENT_INTENSITY: 0.7,       // شدة الضوء المحيط - محسّن
+    DIRECTIONAL_COLOR: 0xFFF8DC,  // لون الضوء الموجه - أكثر دفئاً
+    DIRECTIONAL_INTENSITY: 0.95,  // شدة الضوء الموجه - محسّن
     SHADOW_MAP_SIZE: 2048,        // دقة الظلال
   },
 
@@ -84,11 +84,11 @@ const CONSTANTS = {
 
   // ===== BLOCK COLORS =====
   BLOCK_COLORS: {
-    STONE: 0x888888,      // رمادي
-    DIRT: 0x8B4513,       // بني
-    GRASS: 0x00AA00,      // أخضر
-    WOOD: 0x654321,       // بني داكن
-    LEAVES: 0x228B22,     // أخضر غامق
+    STONE: 0x7A7A7A,      // رمادي محسّن (أفتح)
+    DIRT: 0x8D5B2C,       // بني محسّن
+    GRASS: 0x2ECC71,      // أخضر مشع
+    WOOD: 0x6B4423,       // بني خشبي
+    LEAVES: 0x27AE60,     // أخضر حي
   },
 
   // ===== RENDERER CONFIG =====
@@ -111,28 +111,28 @@ const CONSTANTS = {
 
   // ===== ENVIRONMENT CONFIG =====
   ENVIRONMENT: {
-    TREE_CHANCE: 0.04,        // احتمالية وجود شجرة (reduced from 0.08 for faster generation)
-    CAVE_CHANCE: 0.1,         // احتمالية وجود كهف (reduced from 0.3)
-    CAVE_SIZE: 2,             // حجم الكهوف (reduced from 4)
-    TREE_DENSITY: 0.05,       // كثافة الأشجار (reduced from 0.1)
+    TREE_CHANCE: 0.08,        // احتمالية وجود شجرة - increased for richer world
+    CAVE_CHANCE: 0.12,        // احتمالية وجود كهف
+    CAVE_SIZE: 2.5,           // حجم الكهوف
+    TREE_DENSITY: 0.08,       // كثافة الأشجار - increased
   },
 
   // ===== GRAPHICS CONFIG =====
   GRAPHICS: {
     FOG_ENABLED: true,            // تفعيل الضباب
-    FOG_NEAR: 50,                 // بداية الضباب
-    FOG_FAR: 500,                 // نهاية الضباب
+    FOG_NEAR: 60,                 // بداية الضباب - increased slightly
+    FOG_FAR: 600,                 // نهاية الضباب - increased for better view
     SHADOWS_ENABLED: false,       // تعطيل الظلال لأداء أفضل
     SHADOW_QUALITY: 1024,         // دقة منخفضة (إذا تم تفعيل الظلال)
     SHADOW_FAR: 200,              // بعد منخفض للظلال
     ANTIALIASING: false,          // تعطيل AA لأداء أفضل
-    MAX_PIXEL_RATIO: 1.5,         // تقليل نسبة البكسل
-    AMBIENT_INTENSITY: 0.8,       // زيادة طفيفة في الضوء المحيط
-    DIRECTIONAL_INTENSITY: 0.8,   // الضوء الموجه ثابت
-    TONE_MAPPING_EXPOSURE: 1.0,   // تعريض معالجة الألوان
-    ANISOTROPY: 2,                // تقليل التصفية الخواصية
+    MAX_PIXEL_RATIO: 1.8,         // تحسين الدقة قليلاً للجودة
+    AMBIENT_INTENSITY: 0.85,      // زيادة الضوء المحيط للمظهر الأفضل
+    DIRECTIONAL_INTENSITY: 0.9,   // الضوء الموجه محسّن
+    TONE_MAPPING_EXPOSURE: 1.05,  // تعريض معالجة الألوان محسّن
+    ANISOTROPY: 4,                // تحسين التصفية الخواصية
     FLAT_SHADING: true,           // استخدام Flat Shading (أسرع)
-    QUALITY_LEVEL: 'medium',      // مستوى جودة متوسط
+    QUALITY_LEVEL: 'medium-high', // مستوى جودة محسّن
   },
 
   // ===== DEBUG =====

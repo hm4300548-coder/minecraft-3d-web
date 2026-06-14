@@ -42,8 +42,9 @@ class MaterialManager {
 
     // تحسين الخامة
     texture.magFilter = THREE.NearestFilter;
-    texture.minFilter = THREE.NearestFilter;
-    texture.anisotropy = CONSTANTS.GRAPHICS.ANISOTROPY || 1;
+    texture.minFilter = THREE.NearestMipmapLinearFilter; // أفضل للجودة
+    texture.anisotropy = CONSTANTS.GRAPHICS.ANISOTROPY || 4;
+    texture.generateMipmaps = true;
 
     const material = new THREE.MeshStandardMaterial({
       map: texture,
@@ -52,6 +53,7 @@ class MaterialManager {
       roughness: this.getRoughness(blockType),
       wireframe: false,
       flatShading: CONSTANTS.GRAPHICS.FLAT_SHADING || false,
+      envMapIntensity: 0.3, // إضافة بريق بسيط
     });
 
     this.materials[blockType] = material;
@@ -77,15 +79,15 @@ class MaterialManager {
   getRoughness(blockType) {
     switch (blockType) {
       case CONSTANTS.BLOCK_TYPES.STONE:
-        return 0.8;  // حجر خشن
+        return 0.75; // حجر خشن
       case CONSTANTS.BLOCK_TYPES.DIRT:
-        return 0.9;  // تراب خشن جداً
+        return 0.88; // تراب خشن
       case CONSTANTS.BLOCK_TYPES.GRASS:
-        return 0.85; // عشب خشن
+        return 0.8;  // عشب
       case CONSTANTS.BLOCK_TYPES.WOOD:
-        return 0.7;  // خشب ناعم نسبياً
+        return 0.65; // خشب ناعم
       case CONSTANTS.BLOCK_TYPES.LEAVES:
-        return 0.6;  // أوراق ناعمة
+        return 0.55; // أوراق ناعمة
       default:
         return 0.8;
     }

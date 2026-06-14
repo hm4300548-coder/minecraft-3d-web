@@ -32,19 +32,41 @@ class SceneManager {
   createScene() {
     this.scene = new THREE.Scene();
 
-    // لون الخلفية (سماء زرقاء فاتحة)
-    this.scene.background = new THREE.Color(0x87CEEB);
+    // إنشاء سماء متدرجة جميلة
+    this.createGradientSky();
 
     // الضباب (لتحسين الأداء)
     this.scene.fog = new THREE.Fog(
       0x87CEEB,  // لون الضباب (نفس لون السماء)
-      500,       // بداية الضباب
-      1000       // نهاية الضباب
+      CONSTANTS.GRAPHICS.FOG_NEAR,
+      CONSTANTS.GRAPHICS.FOG_FAR
     );
 
     if (CONSTANTS.DEBUG) {
-      console.log('✓ Scene created successfully');
+      console.log('✓ Scene created with gradient sky');
     }
+  }
+
+  // ===== إنشاء سماء متدرجة =====
+  createGradientSky() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 512;
+    const ctx = canvas.getContext('2d');
+
+    // رسم متدرج من الأزرق الفاتح في الأعلى إلى الأزرق الأفتح نحو الأفق
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, '#5B9FD1');    // أزرق سماوي محسّن في الأعلى
+    gradient.addColorStop(0.4, '#87CEEB'); // أزرق فاتح
+    gradient.addColorStop(0.7, '#B8E0F0'); // أزرق فاتح جداً
+    gradient.addColorStop(1, '#E8F4F8');   // أبيض مزرق قرب الأفق
+
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    this.scene.background = texture;
   }
 
   // ===== إنشاء Renderer =====

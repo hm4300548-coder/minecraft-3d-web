@@ -26,18 +26,20 @@ class Block {
 
     // تحسين الأداء: حذف المعايير غير الضرورية
     geometry.computeBoundingBox();
+    geometry.computeVertexNormals();
 
     // الحصول على المادة من MaterialManager أو استخدام مادة بسيطة
     let material;
     if (this.materialManager) {
       material = this.materialManager.getMaterial(this.type);
     } else {
-      // استخدام MeshPhongMaterial بدلاً من MeshStandardMaterial (أسرع)
+      // استخدام MeshStandardMaterial لجودة أفضل
       const color = this.getColor();
-      material = new THREE.MeshPhongMaterial({
+      material = new THREE.MeshStandardMaterial({
         color: color,
-        shininess: 0,
-        flatShading: true  // تقليل الحسابات
+        metalness: 0.05,
+        roughness: 0.8,
+        flatShading: CONSTANTS.GRAPHICS.FLAT_SHADING || true
       });
     }
 

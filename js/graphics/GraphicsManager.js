@@ -51,6 +51,7 @@ class GraphicsManager {
       const fogFar = CONSTANTS.GRAPHICS.FOG_FAR || 1000;
 
       this.scene.fog = new THREE.Fog(fogColor, fogNear, fogFar);
+      this.scene.fog.color.set(0x87CEEB);
 
       if (CONSTANTS.DEBUG) {
         console.log(`🌫️ Fog enabled: ${fogNear} - ${fogFar}`);
@@ -93,15 +94,6 @@ class GraphicsManager {
 
   // ===== تكوين الـ Renderer =====
   configureRenderer() {
-    // تفعيل Anti-aliasing
-    if (this.antiAliasingEnabled) {
-      this.renderer.antialias = true;
-
-      if (CONSTANTS.DEBUG) {
-        console.log('🎯 Anti-aliasing enabled');
-      }
-    }
-
     // تحسين دقة الرسم
     this.renderer.setPixelRatio(
       Math.min(window.devicePixelRatio, CONSTANTS.GRAPHICS.MAX_PIXEL_RATIO || 2)
@@ -111,8 +103,16 @@ class GraphicsManager {
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     // تحسين معالجة الألوان
-    this.renderer.toneMapping = THREE.ReinhardToneMapping;
-    this.renderer.toneMappingExposure = CONSTANTS.GRAPHICS.TONE_MAPPING_EXPOSURE || 1.0;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping; // أفضل من Reinhard
+    this.renderer.toneMappingExposure = CONSTANTS.GRAPHICS.TONE_MAPPING_EXPOSURE || 1.05;
+
+    // تحسين الجودة
+    this.renderer.gammaInput = true;
+    this.renderer.gammaOutput = true;
+
+    if (CONSTANTS.DEBUG) {
+      console.log('🎯 Graphics optimized for best quality');
+    }
   }
 
   // ===== الحصول على MaterialManager =====
