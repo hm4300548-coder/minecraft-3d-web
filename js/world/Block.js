@@ -24,26 +24,29 @@ class Block {
       CONSTANTS.BLOCK_SIZE
     );
 
-    // الحصول على المادة من MaterialManager إذا كان متوفراً
+    // تحسين الأداء: حذف المعايير غير الضرورية
+    geometry.computeBoundingBox();
+
+    // الحصول على المادة من MaterialManager أو استخدام مادة بسيطة
     let material;
     if (this.materialManager) {
       material = this.materialManager.getMaterial(this.type);
     } else {
-      // fallback إلى مادة بسيطة بناءً على اللون
+      // استخدام MeshPhongMaterial بدلاً من MeshStandardMaterial (أسرع)
       const color = this.getColor();
-      material = new THREE.MeshStandardMaterial({
+      material = new THREE.MeshPhongMaterial({
         color: color,
-        roughness: 0.8,
-        metalness: 0.2,
+        shininess: 0,
+        flatShading: true  // تقليل الحسابات
       });
     }
 
     // إنشاء Mesh
     const mesh = new THREE.Mesh(geometry, material);
 
-    // تفعيل الظلال
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
+    // تعطيل الظلال لتحسين الأداء
+    mesh.castShadow = false;
+    mesh.receiveShadow = false;
 
     // تحديد موقع الكتلة
     mesh.position.set(

@@ -93,8 +93,8 @@ const CONSTANTS = {
 
   // ===== RENDERER CONFIG =====
   RENDERER: {
-    ANTIALIAS: true,
-    SHADOW_MAP: true,
+    ANTIALIAS: false,           // Disabled for performance
+    SHADOW_MAP: false,          // Disabled for performance (60+ FPS target)
     PIXEL_RATIO: window.devicePixelRatio || 1,
   },
 
@@ -122,17 +122,17 @@ const CONSTANTS = {
     FOG_ENABLED: true,            // تفعيل الضباب
     FOG_NEAR: 50,                 // بداية الضباب
     FOG_FAR: 500,                 // نهاية الضباب
-    SHADOWS_ENABLED: true,        // تفعيل الظلال
-    SHADOW_QUALITY: 2048,         // دقة خريطة الظلال
-    SHADOW_FAR: 500,              // بعد الظلال
-    ANTIALIASING: true,           // تفعيل Anti-aliasing
-    MAX_PIXEL_RATIO: 2,           // أقصى نسبة بكسل
-    AMBIENT_INTENSITY: 0.7,       // شدة الضوء المحيط
-    DIRECTIONAL_INTENSITY: 0.9,   // شدة الضوء الموجه
+    SHADOWS_ENABLED: false,       // تعطيل الظلال لأداء أفضل
+    SHADOW_QUALITY: 1024,         // دقة منخفضة (إذا تم تفعيل الظلال)
+    SHADOW_FAR: 200,              // بعد منخفض للظلال
+    ANTIALIASING: false,          // تعطيل AA لأداء أفضل
+    MAX_PIXEL_RATIO: 1.5,         // تقليل نسبة البكسل
+    AMBIENT_INTENSITY: 0.8,       // زيادة طفيفة في الضوء المحيط
+    DIRECTIONAL_INTENSITY: 0.8,   // الضوء الموجه ثابت
     TONE_MAPPING_EXPOSURE: 1.0,   // تعريض معالجة الألوان
-    ANISOTROPY: 4,                // درجة التصفية الخواصية
-    FLAT_SHADING: false,          // استخدام Flat Shading
-    QUALITY_LEVEL: 'high',        // مستوى الجودة (low/medium/high)
+    ANISOTROPY: 2,                // تقليل التصفية الخواصية
+    FLAT_SHADING: true,           // استخدام Flat Shading (أسرع)
+    QUALITY_LEVEL: 'medium',      // مستوى جودة متوسط
   },
 
   // ===== DEBUG =====

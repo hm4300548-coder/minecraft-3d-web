@@ -7,6 +7,7 @@ import ChunkManager from './ChunkManager.js';
 import TerrainGenerator from './TerrainGenerator.js';
 import CullingManager from './CullingManager.js';
 import GraphicsManager from '../graphics/GraphicsManager.js';
+import StructureGenerator from './StructureGenerator.js';
 
 class World2 {
   constructor(sceneManager, camera) {
@@ -54,6 +55,34 @@ class World2 {
       console.log('✓ World2 (Infinite Terrain) initialized');
       console.log('  Terrain Settings:', this.generator.getInfo());
     }
+
+    // إنشاء البنى المسبقة بالقرب من نقطة الإنطلاق
+    this.generateStarterStructures();
+  }
+
+  // ===== إنشاء البنى الأساسية عند بدء اللعبة =====
+  generateStarterStructures() {
+    const spawnX = 0;
+    const spawnZ = 0;
+
+    // الانتظار قليلاً قبل إنشاء البنى للتأكد من تحميل الـ Chunks
+    setTimeout(() => {
+      // إنشاء المنزل الأساسي
+      StructureGenerator.createStarterHouse(this, spawnX - 4, 0, spawnZ - 4);
+
+      // إنشاء حديقة صغيرة بجانب المنزل
+      StructureGenerator.createGarden(this, spawnX + 5, spawnZ - 5, 6);
+
+      // إنشاء برج مراقبة
+      StructureGenerator.createWatchTower(this, spawnX + 10, 0, spawnZ, 8);
+
+      console.log('✓ Starter structures created');
+    }, 500);
+  }
+
+  // ===== الحصول على ارتفاع التضاريس عند موقع معين =====
+  getTerrainHeightAtChunk(x, z) {
+    return this.generator.getTerrainHeight(x, z);
   }
 
   // ===== تحديث العالم في كل Frame =====

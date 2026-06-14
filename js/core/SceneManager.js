@@ -52,21 +52,24 @@ class SceneManager {
     const container = document.getElementById('canvas-container');
 
     this.renderer = new THREE.WebGLRenderer({
-      antialias: CONSTANTS.RENDERER.ANTIALIAS,
-      powerPreference: 'high-performance'
+      antialias: false,  // Disable for performance
+      powerPreference: 'high-performance',
+      alpha: false,
+      precision: 'lowp'
     });
 
-    // إعدادات الـ Renderer
+    // إعدادات الـ Renderer (optimized for performance)
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(CONSTANTS.RENDERER.PIXEL_RATIO);
-    this.renderer.shadowMap.enabled = CONSTANTS.RENDERER.SHADOW_MAP;
-    this.renderer.shadowMap.type = THREE.PCFShadowShadowMap;
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Cap pixel ratio
+    this.renderer.shadowMap.enabled = false;  // Disable shadows by default
+    this.renderer.toneMapping = THREE.NoToneMapping;
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     // إضافة الـ Canvas إلى الصفحة
     container.appendChild(this.renderer.domElement);
 
     if (CONSTANTS.DEBUG) {
-      console.log('✓ Renderer created successfully');
+      console.log('✓ Renderer created successfully (optimized for 60+ FPS)');
     }
   }
 
@@ -91,16 +94,8 @@ class SceneManager {
     // موقع الضوء (يمثل الشمس)
     directionalLight.position.set(100, 100, 50);
 
-    // تفعيل الظلال
-    directionalLight.castShadow = true;
-    directionalLight.shadow.camera.left = -100;
-    directionalLight.shadow.camera.right = 100;
-    directionalLight.shadow.camera.top = 100;
-    directionalLight.shadow.camera.bottom = -100;
-    directionalLight.shadow.camera.near = 0.5;
-    directionalLight.shadow.camera.far = 500;
-    directionalLight.shadow.mapSize.width = CONSTANTS.LIGHTING.SHADOW_MAP_SIZE;
-    directionalLight.shadow.mapSize.height = CONSTANTS.LIGHTING.SHADOW_MAP_SIZE;
+    // تفعيل الظلال مُعطّل لتحسين الأداء
+    directionalLight.castShadow = false;
 
     this.scene.add(directionalLight);
     this.lights.directional = directionalLight;
