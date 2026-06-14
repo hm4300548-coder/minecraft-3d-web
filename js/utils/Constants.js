@@ -17,17 +17,17 @@ const CONSTANTS = {
     WIDTH: 16,           // عرض الـ Chunk (16x16x16 كتلة)
     HEIGHT: 16,          // ارتفاع الـ Chunk
     DEPTH: 16,           // عمق الـ Chunk
-    RENDER_DISTANCE: 4,  // عدد الـ Chunks حول اللاعب (أكبر = أداء أقل)
+    RENDER_DISTANCE: 1,  // عدد الـ Chunks حول اللاعب (optimized: 1 = 27 chunks instead of 729)
   },
 
   // ===== TERRAIN GENERATION CONFIG =====
   TERRAIN: {
     SEED: 12345,         // البذرة العشوائية لتوليد متطابق
     SCALE: 50,           // حجم التضاريس (أكبر = تضاريس أكثر سلاسة)
-    OCTAVES: 5,          // عدد طبقات Perlin Noise
+    OCTAVES: 3,          // عدد طبقات Perlin Noise (reduced from 5 for faster generation)
     PERSISTENCE: 0.5,    // تأثير الطبقات الكبيرة
     LACUNARITY: 2.0,     // تكرار التفاصيل
-    AMPLITUDE: 20,       // ارتفاع التلال
+    AMPLITUDE: 15,       // ارتفاع التلال (reduced from 20)
     WATER_LEVEL: 5,      // مستوى الماء
     GRASS_LEVEL: 8,      // ارتفاع الأرضية العشبية
   },
@@ -111,10 +111,10 @@ const CONSTANTS = {
 
   // ===== ENVIRONMENT CONFIG =====
   ENVIRONMENT: {
-    TREE_CHANCE: 0.08,        // احتمالية وجود شجرة
-    CAVE_CHANCE: 0.3,         // احتمالية وجود كهف
-    CAVE_SIZE: 4,             // حجم الكهوف
-    TREE_DENSITY: 0.1,        // كثافة الأشجار
+    TREE_CHANCE: 0.04,        // احتمالية وجود شجرة (reduced from 0.08 for faster generation)
+    CAVE_CHANCE: 0.1,         // احتمالية وجود كهف (reduced from 0.3)
+    CAVE_SIZE: 2,             // حجم الكهوف (reduced from 4)
+    TREE_DENSITY: 0.05,       // كثافة الأشجار (reduced from 0.1)
   },
 
   // ===== GRAPHICS CONFIG =====
